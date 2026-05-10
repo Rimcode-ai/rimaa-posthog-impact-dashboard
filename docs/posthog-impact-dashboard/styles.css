@@ -1,0 +1,183 @@
+/* PostHog Engineering Impact dashboard, hand-rolled CSS.
+   Tailwind covers most utilities. This file owns animations, signal palette tokens,
+   and a handful of non-utility tweaks. */
+
+:root {
+  --sig-code: #0ea5e9;
+  --sig-review: #8b5cf6;
+  --sig-breadth: #10b981;
+  --sig-incidents: #f43f5e;
+  --sig-central: #f59e0b;
+}
+
+html, body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, Roboto, sans-serif;
+}
+
+/* Pill nav */
+.pill {
+  color: #475569;
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.pill:hover { color: #0f172a; }
+.pill.is-active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.06);
+}
+
+/* Pulsing green dot beside Ask AI */
+.ask-dot {
+  display: inline-block;
+  width: 8px; height: 8px;
+  border-radius: 9999px;
+  background: #10b981;
+  position: relative;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55);
+  animation: pulse-dot 1.6s ease-out infinite;
+}
+@keyframes pulse-dot {
+  0%   { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Article cards */
+.eng-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 1rem 1.1rem;
+}
+.eng-card .signature-block {
+  border-left: 3px solid currentColor;
+  padding: 0.5rem 0.75rem;
+  background: #f8fafc;
+  border-radius: 0.25rem;
+}
+
+/* Stat tiles */
+.stat-tile {
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.6rem;
+  background: #ffffff;
+}
+.stat-tile.is-dominant {
+  box-shadow: 0 0 0 2px currentColor inset;
+}
+
+/* Stacked positive-contribution segment bar */
+.contrib-bar {
+  display: flex;
+  width: 100%;
+  height: 8px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background: #f1f5f9;
+}
+.contrib-bar > span {
+  display: block;
+  height: 100%;
+}
+
+/* Signal swatch dot */
+.swatch {
+  display: inline-block;
+  width: 9px; height: 9px;
+  border-radius: 9999px;
+  background: currentColor;
+}
+
+/* KPI tiles */
+.kpi-tile {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+  padding: 0.75rem 0.9rem;
+}
+
+/* Suggested-question pills */
+.qpill {
+  font-size: 12px;
+  background: #f1f5f9;
+  color: #334155;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+.qpill:hover {
+  background: #e2e8f0;
+}
+
+/* Spinner */
+.spinner {
+  width: 12px; height: 12px;
+  border: 2px solid #cbd5e1;
+  border-top-color: #0ea5e9;
+  border-radius: 9999px;
+  display: inline-block;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Compare drawer */
+.compare-drawer {
+  transform: translateY(105%);
+  transition: transform 220ms ease;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+.compare-drawer.is-open {
+  transform: translateY(0%);
+}
+
+/* Network SVG host */
+#net-host svg { width: 100%; height: 100%; display: block; }
+#net-host .net-edge-label {
+  font-size: 10px;
+  fill: #334155;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+#net-host .net-node-label {
+  font-size: 11px;
+  fill: #0f172a;
+  paint-order: stroke;
+  stroke: #ffffff;
+  stroke-width: 3px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+/* Radar */
+.radar-axis-label {
+  font-size: 10px;
+  fill: #475569;
+}
+
+/* Table compact rows */
+#explore-table tbody tr { border-top: 1px solid #f1f5f9; }
+#explore-table tbody td { padding: 6px 8px; }
+#explore-table tbody tr.is-selected { background: #f0f9ff; }
+#explore-table tbody tr.is-disabled { opacity: 0.45; }
+
+/* Sort indicator */
+#explore-table thead th[data-sort].is-sorted::after {
+  content: attr(data-dir);
+  margin-left: 4px;
+  color: #64748b;
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .ask-dot { animation: none; }
+  .compare-drawer { transition: none; }
+  .spinner { animation-duration: 1.6s; }
+}

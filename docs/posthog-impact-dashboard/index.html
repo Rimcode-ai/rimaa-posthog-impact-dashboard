@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PostHog Engineering Impact</title>
+  <meta name="description" content="The most impactful PostHog engineers, trailing 90 days.">
+  <link rel="preload" as="fetch" href="data.json" crossorigin>
+  <link rel="dns-prefetch" href="https://cdn.tailwindcss.com">
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="preconnect" href="https://avatars.githubusercontent.com" crossorigin>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    window.ASSISTANT_URL = null;
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sig: {
+              code: "#0ea5e9",
+              review: "#8b5cf6",
+              breadth: "#10b981",
+              incidents: "#f43f5e",
+              central: "#f59e0b"
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+
+<header class="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-slate-200">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
+    <div class="flex items-center gap-3 min-w-0">
+      <a href="#brief" class="flex items-center gap-3 min-w-0" aria-label="Home">
+        <span class="inline-flex shrink-0">
+          <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true">
+            <defs>
+              <linearGradient id="lg" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#0ea5e9"/>
+                <stop offset="1" stop-color="#4f46e5"/>
+              </linearGradient>
+            </defs>
+            <rect x="0" y="0" width="36" height="36" rx="8" fill="url(#lg)"/>
+            <line x1="9" y1="9"  x2="27" y2="9"  stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
+            <line x1="9" y1="9"  x2="18" y2="18" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
+            <line x1="27" y1="9" x2="18" y2="18" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
+            <line x1="9" y1="27" x2="18" y2="18" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
+            <line x1="27" y1="27" x2="18" y2="18" stroke="#fff" stroke-width="1.2" stroke-linecap="round" opacity="0.85"/>
+            <circle cx="9"  cy="9"  r="2.6" fill="#fff"/>
+            <circle cx="27" cy="9"  r="2.6" fill="#fff"/>
+            <circle cx="9"  cy="27" r="2.6" fill="#fff"/>
+            <circle cx="27" cy="27" r="2.6" fill="#fff"/>
+            <circle cx="18" cy="18" r="3.2" fill="#fff"/>
+          </svg>
+        </span>
+        <span class="min-w-0">
+          <span class="block text-lg font-medium text-slate-900 truncate">PostHog · Engineering Impact</span>
+          <span id="meta-line" class="block text-xs text-slate-500 truncate"></span>
+        </span>
+      </a>
+    </div>
+    <div class="flex flex-col items-start sm:items-end gap-1">
+      <nav id="pill-nav" class="flex items-center gap-1 bg-slate-100 rounded-full p-1 text-sm" role="tablist" aria-label="Sections">
+        <a href="#brief" data-tab="brief" role="tab" class="pill px-3 py-1.5 rounded-full font-medium">Leadership Brief</a>
+        <a href="#explore" data-tab="explore" role="tab" class="pill px-3 py-1.5 rounded-full font-medium">Explore</a>
+        <a href="#ask" data-tab="ask" role="tab" id="ask-pill" class="pill pill-ask px-3 py-1.5 rounded-full font-medium flex items-center gap-1.5">
+          <span class="ask-dot" aria-hidden="true"></span>
+          <span>Ask AI</span>
+        </a>
+      </nav>
+      <a class="text-xs text-slate-500 hover:text-slate-700" href="https://github.com/PostHog/posthog" target="_blank" rel="noopener">github.com/PostHog/posthog</a>
+    </div>
+  </div>
+</header>
+
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6">
+
+  <section id="tab-brief" class="tab-panel" role="tabpanel" aria-labelledby="brief">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <div class="lg:col-span-8 flex flex-col gap-6">
+        <article id="exec-card" class="rounded-xl border border-slate-200 bg-gradient-to-br from-sky-50 to-indigo-50 p-5">
+          <div class="flex flex-wrap items-start justify-between gap-3 mb-2">
+            <div class="text-[11px] font-semibold tracking-wider text-slate-500">EXECUTIVE SUMMARY</div>
+            <button id="copy-digest-btn" type="button"
+              class="text-xs font-medium bg-slate-900 text-white px-3 py-1.5 rounded-md hover:bg-slate-700 transition">
+              Copy weekly digest
+            </button>
+          </div>
+          <h2 class="text-xl sm:text-2xl font-semibold text-slate-900 mb-3">The most impactful PostHog engineers, last 90 days</h2>
+          <ul id="exec-bullets" class="flex flex-col gap-2 text-sm text-slate-700"></ul>
+        </article>
+
+        <div>
+          <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-slate-600 mb-3" id="signal-legend"></div>
+          <div id="top5-cards" class="flex flex-col gap-4"></div>
+        </div>
+      </div>
+
+      <aside class="lg:col-span-4 flex flex-col gap-6">
+        <div class="grid grid-cols-2 gap-3" id="kpi-tiles"></div>
+
+        <section class="rounded-xl border border-slate-200 bg-white p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-1">Why not just count PRs?</h3>
+          <p class="text-xs text-slate-600 mb-3">Volume and impact diverge. The five engineers below merged the most PRs in the window; their impact ranks tell a different story.</p>
+          <div id="vol-table" class="text-sm"></div>
+        </section>
+
+        <section class="rounded-xl border border-slate-200 bg-white p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-3">Area leaders</h3>
+          <div id="area-leaders" class="flex flex-col gap-1.5 text-sm"></div>
+        </section>
+
+        <section class="rounded-xl border border-slate-200 bg-white p-4">
+          <h3 class="text-sm font-semibold text-slate-900 mb-2">Top-5 review network</h3>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-600 mb-2" id="net-legend"></div>
+          <div id="net-host" style="height:320px;" class="rounded-md border border-slate-100 bg-slate-50/50"></div>
+        </section>
+      </aside>
+    </div>
+  </section>
+
+  <section id="tab-explore" class="tab-panel hidden" role="tabpanel" aria-labelledby="explore">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+      <aside class="lg:col-span-4">
+        <div class="lg:sticky lg:top-24 flex flex-col gap-4">
+          <section class="rounded-xl border border-slate-200 bg-white p-4">
+            <h3 class="text-sm font-semibold text-slate-900 mb-3">Reweight signals</h3>
+            <div id="sliders" class="flex flex-col gap-3"></div>
+            <div class="mt-4 pt-3 border-t border-slate-100">
+              <div class="text-[11px] font-semibold tracking-wider text-slate-500 mb-2">TOP 5 WITH CURRENT WEIGHTS</div>
+              <ol id="reweighted-top5" class="flex flex-col gap-1.5 text-sm"></ol>
+            </div>
+            <button id="reset-weights" class="mt-3 text-xs text-sky-700 hover:underline">Reset to defaults</button>
+          </section>
+        </div>
+      </aside>
+      <section class="lg:col-span-8">
+        <div class="rounded-xl border border-slate-200 bg-white">
+          <div class="p-3 border-b border-slate-100 flex items-center justify-between gap-3 flex-wrap">
+            <input id="explore-search" type="search" placeholder="filter by login..." class="text-sm border border-slate-200 rounded-md px-3 py-1.5 w-56 focus:outline-none focus:ring-2 focus:ring-sky-300">
+            <a href="#" id="compare-demo" class="text-xs text-sky-700 hover:underline hidden">Compare these two</a>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm" id="explore-table">
+              <thead class="bg-slate-50 text-slate-600 text-xs">
+                <tr>
+                  <th class="px-2 py-2"></th>
+                  <th data-sort="rank"   class="px-2 py-2 text-left cursor-pointer">#</th>
+                  <th data-sort="login"  class="px-2 py-2 text-left cursor-pointer">engineer</th>
+                  <th data-sort="score"  class="px-2 py-2 text-right cursor-pointer">score</th>
+                  <th data-sort="prs"    class="px-2 py-2 text-right cursor-pointer">PRs</th>
+                  <th data-sort="surv"   class="px-2 py-2 text-right cursor-pointer">surviving</th>
+                  <th data-sort="rev"    class="px-2 py-2 text-right cursor-pointer">reviews</th>
+                  <th data-sort="areas"  class="px-2 py-2 text-right cursor-pointer">areas</th>
+                  <th data-sort="inc"    class="px-2 py-2 text-right cursor-pointer">incidents</th>
+                  <th data-sort="cent"   class="px-2 py-2 text-right cursor-pointer">centrality</th>
+                  <th data-sort="revrate" class="px-2 py-2 text-right cursor-pointer">↩ Rev%</th>
+                  <th data-sort="linkrate" class="px-2 py-2 text-right cursor-pointer">Issue%</th>
+                </tr>
+              </thead>
+              <tbody id="explore-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div id="compare-drawer" class="compare-drawer fixed inset-x-0 bottom-0 z-40 bg-white border-t border-slate-200 shadow-xl">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4">
+        <div class="flex items-center justify-between mb-3">
+          <h4 class="text-sm font-semibold text-slate-900">Compare</h4>
+          <div class="flex items-center gap-2">
+            <button id="compare-copy" type="button" class="text-xs font-medium bg-slate-900 text-white px-3 py-1.5 rounded-md hover:bg-slate-700">Copy as markdown</button>
+            <button id="compare-close" type="button" class="text-xs font-medium border border-slate-200 px-3 py-1.5 rounded-md hover:bg-slate-50">Close</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="compare-body"></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tab-ask" class="tab-panel hidden" role="tabpanel" aria-labelledby="ask">
+    <div class="rounded-xl border border-slate-200 bg-white p-5 max-w-3xl">
+      <h2 class="text-lg font-semibold text-slate-900 mb-1">Ask the live model about this window</h2>
+      <p class="text-sm text-slate-600 mb-4">Try a suggested question or write your own. The model only sees the slim window summary.</p>
+      <div id="suggested-pills" class="flex flex-wrap gap-2 mb-4"></div>
+      <textarea id="ask-input" rows="3" class="w-full border border-slate-200 rounded-md p-3 text-sm focus:outline-none focus:ring-2 focus:ring-sky-300" placeholder="Ask anything about the trailing window..."></textarea>
+      <div class="flex items-center gap-3 mt-3">
+        <button id="ask-submit" type="button" class="text-sm font-medium bg-sky-600 text-white px-4 py-2 rounded-md hover:bg-sky-700">Ask</button>
+        <span id="ask-spinner" class="hidden inline-flex items-center gap-2 text-xs text-slate-500">
+          <span class="spinner"></span> thinking
+        </span>
+      </div>
+      <div id="ask-answer" class="mt-4 text-sm text-slate-800 whitespace-pre-wrap"></div>
+    </div>
+  </section>
+</main>
+
+<footer class="max-w-7xl mx-auto px-4 sm:px-6 py-8 text-xs text-slate-500 flex flex-wrap items-center gap-x-4 gap-y-2">
+  <a href="https://posthog.com/" target="_blank" rel="noopener" class="hover:text-slate-700">posthog.com</a>
+  <a href="https://github.com/PostHog/posthog" target="_blank" rel="noopener" class="hover:text-slate-700">github.com/PostHog/posthog</a>
+  <a href="#methodology" id="open-methodology" class="hover:text-slate-700">Methodology</a>
+</footer>
+
+<div id="methodology-modal" class="fixed inset-0 z-50 hidden" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="methodology-title">
+  <div id="methodology-backdrop" class="absolute inset-0 bg-slate-900/50"></div>
+  <div class="absolute inset-0 flex items-start sm:items-center justify-center p-4 overflow-y-auto">
+    <div class="relative bg-white rounded-xl shadow-xl max-w-2xl w-full p-6 max-h-[90vh] overflow-y-auto">
+      <button id="methodology-close" class="absolute top-3 right-3 text-slate-400 hover:text-slate-700 text-2xl leading-none" aria-label="Close">×</button>
+      <h2 id="methodology-title" class="text-xl font-semibold text-slate-900 mb-3">Methodology</h2>
+      <div id="methodology-body" class="text-sm text-slate-700 flex flex-col gap-3"></div>
+    </div>
+  </div>
+</div>
+
+<script defer src="app.js"></script>
+</body>
+</html>
