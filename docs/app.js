@@ -32,7 +32,7 @@ const STATE = {
   }
   // 2. Otherwise fetch — this is the cold-path and still small (~10KB).
   if (!STATE.core) {
-    const r = await fetch("data.json");
+    const r = await fetch("data.json?v=" + Date.now(), { cache: "no-store" });
     STATE.core = await r.json();
   }
   STATE.weights = { ...STATE.core.weights };
