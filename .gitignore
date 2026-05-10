@@ -1,2 +1,9 @@
+node_modules/
+test-results/
+playwright-report/
+raw.json
+.DS_Store
+
 build/
+.DS_Store
 2026-*-weave-*.txt
